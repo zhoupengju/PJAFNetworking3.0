@@ -238,7 +238,7 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     }
 
     // HTTP Method Definitions; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
-    self.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", @"DELETE", nil];
+    self.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"POST", @"HEAD", @"DELETE", nil];
 
     self.mutableObservedChangedKeyPaths = [NSMutableSet set];
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
@@ -374,7 +374,16 @@ forHTTPHeaderField:(NSString *)field
     }
 
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
+    
+    //拼接参数 - by zhoupengju
+    NSString *stringParams = [NSString stringWithFormat:@"&platform=iOS&imei=%@&version=%@", [[UIDevice currentDevice].identifierForVendor UUIDString],
+    [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    NSString *newURLString = [NSString stringWithFormat:@"http://%@%@%@", URL_Host, [mutableRequest.URL absoluteString], stringParams];
 
+    mutableRequest.URL = [NSURL URLWithString:newURLString];
+    
+    NSLog(@"%@", [mutableRequest.URL absoluteString]);
+    
 	return mutableRequest;
 }
 
@@ -387,7 +396,7 @@ forHTTPHeaderField:(NSString *)field
     NSParameterAssert(method);
     NSParameterAssert(![method isEqualToString:@"GET"] && ![method isEqualToString:@"HEAD"]);
 
-    NSMutableURLRequest *mutableRequest = [self requestWithMethod:method URLString:URLString parameters:nil error:error];
+    NSMutableURLRequest *mutableRequest = [self requestWithMethod:method URLString:URLString parameters:parameters error:error];
 
     __block AFStreamingMultipartFormData *formData = [[AFStreamingMultipartFormData alloc] initWithURLRequest:mutableRequest stringEncoding:NSUTF8StringEncoding];
 
@@ -480,6 +489,7 @@ forHTTPHeaderField:(NSString *)field
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+        
         if (![request valueForHTTPHeaderField:field]) {
             [mutableRequest setValue:value forHTTPHeaderField:field];
         }

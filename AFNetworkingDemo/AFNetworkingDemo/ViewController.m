@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "HTRequestHelper.h"
 
 @interface ViewController ()
 
@@ -16,12 +17,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    NSDictionary *dict = @{@"username" : @"23716997892", @"password" : @"123123", @"type" : @"1"};
+    [HTRequestHelper LoginDataParams:dict success:^(id responseObj) {
+        
+        NSLog(@"%@", responseObj);
+    } failure:^(NSError *error) {
+        
+        
+    }];
+    
+    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 100)];
+    
+    [self.view addSubview:btn];
+    
+    btn.backgroundColor = [UIColor redColor];
+    
+    [btn addTarget:self action:@selector(btnClick) forControlEvents:UIControlEventTouchUpInside];
+}
+    
+- (void)btnClick {
+
+    [HTRequestHelper uploadSingleFileSuccess:^(id responseObj) {
+        
+        NSLog(@"%@", responseObj);
+    }];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+
+    [HTRequestHelper downloadVWithFilePath:^(NSString *filePath) {
+        
+        PJLog(@"%@", filePath);
+    }];
 }
 
 @end

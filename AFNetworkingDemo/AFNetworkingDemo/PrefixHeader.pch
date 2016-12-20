@@ -1,0 +1,39 @@
+
+
+//
+//  PrefixHeader.pch
+//  AFNetworkingDemo
+//
+//  Created by 周鹏钜 on 16/12/16.
+//  Copyright © 2016年 周鹏钜. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+
+#define WIDTH [[UIScreen mainScreen] bounds].size.width
+#define HEIGHT [[UIScreen mainScreen] bounds].size.height
+
+
+#ifdef DEBUG
+#   define PJLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define PJLog(...)
+#endif
+
+#define URL_Host  @"www.ileup.com" //乐上上线接口
+
+//#define URL_Host  @"192.168.6.52"   //志峰电脑ip
+
+#define USER_LOGIN      @"/app/v2/login"
+
+//刷新接口
+#define Refresh_Index    @"/app/v2/course/intr"
+
+/** 个人资料-上传头像 */
+#define HTUploadImage   @"/app/v2/member/upload-img"
+
+#endif /* PrefixHeader_pch */
